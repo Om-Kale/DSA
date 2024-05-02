@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 100
+
+int graph[MAX_VERTICES][MAX_VERTICES];
+int visited[MAX_VERTICES];
+int queue[MAX_VERTICES];
+int front = -1, rear = -1;
+
+void enqueue(int vertex) {
+    if (rear == MAX_VERTICES - 1) {
+        printf("Queue Overflow\n");
+        return;
+    }
+    if (front == -1)
+        front = 0;
+    rear++;
+    queue[rear] = vertex;
+}
+
+int dequeue() {
+    if (front == -1 || front > rear) {
+        printf("Queue Underflow\n");
+        return -1;
+    }
+    int vertex = queue[front];
+    front++;
+    return vertex;
+}
+
+void BFS(int start, int vertices) {
+    int i, currentVertex;
+    
+    enqueue(start);
+    visited[start] = 1;
+    
+    while (front != -1) {
+        currentVertex = dequeue();
+        printf("%d ", currentVertex);
+        
+        for (i = 0; i < vertices; i++) {
+            if (graph[currentVertex][i] == 1 && !visited[i]) {
+                enqueue(i);
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int vertices, edges, i, j, vertex1, vertex2, startVertex;
+    
+    printf("Enter the number of vertices: ");
+    scanf("%d", &vertices);
+    
+    printf("Enter the number of edges: ");
+    scanf("%d", &edges);
+    
+    for (i = 0; i < vertices; i++) {
+        visited[i] = 0;
+        for (j = 0; j < vertices; j++) {
+            graph[i][j] = 0;
+        }
+    }
+    
+    printf("Enter the edges (vertex1 vertex2):\n");
+    for (i = 0; i < edges; i++) {
+        scanf("%d %d", &vertex1, &vertex2);
+        graph[vertex1][vertex2] = 1;
+        graph[vertex2][vertex1] = 1; // For undirected graph
+    }
+    
+    printf("Enter the start vertex for BFS traversal: ");
+    scanf("%d", &startVertex);
+    
+    printf("BFS Traversal: ");
+    BFS(startVertex, vertices);
+    
+    printf("\n");
+    
+    return 0;
+}
